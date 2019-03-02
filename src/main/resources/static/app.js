@@ -15,7 +15,7 @@ let greetings20TBody;
 function setConnected(connected) {
 
     // Toggle connect/disconnect buttons.
-    connectButton.prop("disabled", !connected);
+    connectButton.prop("disabled", connected);
     disconnectButton.prop("disabled", !connected);
 
     // Toggle conversation table visibility.
@@ -84,6 +84,7 @@ $(function() {
 
     connectButton = $("#connect");
     disconnectButton = $("#disconnect");
+    disconnectButton.prop("disabled", true);
     sendButton = $("#send");
     idInput = $("#id");
     nameInput = $("#name");

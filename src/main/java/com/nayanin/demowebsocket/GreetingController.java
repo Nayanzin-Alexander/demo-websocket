@@ -13,7 +13,7 @@ public class GreetingController {
     @MessageMapping ensures that if a message is sent to destination "/hello",
     then the greeting() method is called.
      */
-    @MessageMapping("/hello/{id}")
+    @MessageMapping("hello/{id}")
 
     /*
     The return value is broadcast to all subscribers to "/topic/greetings" as specified
