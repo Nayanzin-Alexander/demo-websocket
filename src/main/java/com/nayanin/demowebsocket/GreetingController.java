@@ -3,6 +3,7 @@ package com.nayanin.demowebsocket;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
 
@@ -16,10 +17,17 @@ public class GreetingController {
     @MessageMapping("hello/{id}")
 
     /*
-    The return value is broadcast to all subscribers to "/topic/greetings" as specified
+    The return value is broadcast to all subscribers to "/topic/" as specified
     in the @SendTo annotation.
+    @SendTo("/topic/greetings")
+    */
+
+    /*
+    The return value is broadcast to the sender user session.
+    @SendToUser(value = "hello/{id}", broadcast = false)
      */
-    //@SendTo("/topic/greetings")
+
+    @SendToUser(value = "/hello", broadcast = false)
     public Greeting greeting(
             @DestinationVariable("id") String id,
             HelloMessage message) throws Exception {

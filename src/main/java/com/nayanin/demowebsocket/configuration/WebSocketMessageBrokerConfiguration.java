@@ -9,6 +9,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 import java.util.List;
 
@@ -28,7 +29,21 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
+        int inboundChannelCorePoolSize = Runtime.getRuntime().availableProcessors() * 4;
         registration.interceptors(channelInterceptors.toArray(new ChannelInterceptor[channelInterceptors.size()]));
+        registration.taskExecutor().corePoolSize(inboundChannelCorePoolSize);
+    }
+
+    @Override
+    public void configureClientOutboundChannel(ChannelRegistration registration) {
+        int outboundChannelCorePoolSize = Runtime.getRuntime().availableProcessors() * 4;
+        registration.taskExecutor().corePoolSize(outboundChannelCorePoolSize);
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+        registry.setSendTimeLimit(15 * 1000)            // max amount of time ms allowed when sending (default 10sec).
+                .setSendBufferSizeLimit(512 * 1024);    // amount of data to buffer (0 disable buffering).
     }
 
     /**
@@ -40,6 +55,6 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("*")
-                .withSockJS();
+                .withSockJS(); // Use SockJS for fallback options.
     }
 }
